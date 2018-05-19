@@ -2,14 +2,19 @@ import React from 'react'
 
 class Weather extends React.Component {
   render() {
-    let sevenDaysWeather = this.props.consolidated_weather.map((item) => {
-      return <li key={item.id}>{item.applicable_date} {item.weather_state_name} {item.max_temp} {item.min_temp} {item.humidity}</li>
+    let weather_detail = this.props.consolidated_weather.map((day, i) => (
+      [
+        <li key={i} className="date">{day.applicable_date}</li>,
+        <li key={i+1} className="weather_state">{day.weather_state_name}</li>,
+        <li key={i+2} className="max_temp">{Math.round(day.max_temp)}&#8451;</li>,
+        <li key={i+3} className="min_temp">{Math.round(day.min_temp)}&#8451;</li>,
+        <li key={i+4} className="humidity">Humidity: {day.humidity}&#37;</li>,
+      ]
+    ))
 
-
-    })
     return(
-      <div>
-        {sevenDaysWeather}
+      <div className="weather_container">
+        {weather_detail}
       </div>
     )
   }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Title from './components/Title'
-import Search from './components/Search'
 import Weather from './components/Weather'
+import Geosuggest from 'react-geosuggest'
 
 import './stylesheets/App.css';
 
@@ -9,17 +9,31 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      lat: null,
+      lng: null,
       woeid : null,
       location: null,
       consolidated_weather: []
     }
     this.fetchWeather = this.fetchWeather.bind(this)
+    this.onSuggestSelect = this.onSuggestSelect.bind(this)
+  }
+
+  onSuggestSelect(suggest) {
+    if (suggest) {
+      this.setState({
+        lat: suggest.location.lat,
+        lng: suggest.location.lng
+      })
+    }
   }
 
   fetchWeather(event) {
     event.preventDefault()
-    const city = event.target.elements.city.value
-    fetch(`https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/search/?query=${city}`, {
+    // const city = event.target.elements.city.value
+    let latt = this.state.lat
+    let long = this.state.lng
+    fetch(`https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/search/?lattlong=${latt}, ${long}`, {
       credentials: 'same-origin',
       method: "GET",
       headers: { 'Content-Type': 'application/json' }
@@ -44,18 +58,27 @@ class App extends Component {
       })
   }
 
-
-
   render() {
-    console.log(this.state.woeid);
-    console.log(this.state.location);
-    console.log(this.state.consolidated_weather);
+    console.log("woeid:" + this.state.woeid);
+    console.log("city:" + this.state.location);
+    console.log("consolidated weather:" + this.state.consolidated_weather);
+    console.log(this.state.lat);
+    console.log(this.state.lng);
     return (
       <div className="App">
         <Title/>
-        <Search
+        {/* <Search
           fetchWoeid={this.fetchWeather}
-        />
+        /> */}
+        <form onSubmit={this.fetchWeather}>
+          <Geosuggest
+            ref={el=>this._geoSuggest=el}
+            placeholder="Enter a city or zipcode"
+            types={['(cities)']}
+            onSuggestSelect={this.onSuggestSelect}
+          />
+          <button>Go!</button>
+        </form>
         <Weather
           consolidated_weather={this.state.consolidated_weather}
         />
