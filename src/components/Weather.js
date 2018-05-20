@@ -12,8 +12,12 @@ class Weather extends React.Component {
       ]
     ))
 
+    let search_city = this.props.search_location
+    let search_country = this.props.search_country
+
     return(
       <div className="weather_container">
+        <h3>{search_city}, {search_country}</h3>
         {weather_detail}
       </div>
     )
