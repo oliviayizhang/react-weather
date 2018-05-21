@@ -21,10 +21,12 @@ class App extends Component {
       search_location: null,
       search_country: null,
       user_location: null,
+      user_location_state: null,
       consolidated_weather: [],
       current_temp: null,
       current_weather_state: null,
-      current_weather_state_svg: null
+      current_weather_state_svg: null,
+      isSearching: false
     }
     this.fetchWeather = this.fetchWeather.bind(this)
     this.onSuggestSelect = this.onSuggestSelect.bind(this)
@@ -74,6 +76,7 @@ class App extends Component {
           .then(data => {
             this.setState({
               user_location: data.title,
+              user_location_state: data.parent.title,
               current_temp: data.consolidated_weather[0].the_temp,
               current_weather_state: data.consolidated_weather[0].weather_state_name,
               current_weather_state_svg: data.consolidated_weather[0].weather_state_abbr
@@ -94,7 +97,8 @@ class App extends Component {
       .then(response => response.json())
       .then(data => {
         this.setState({
-          woeid: data[0].woeid
+          woeid: data[0].woeid,
+          isSearching: true
         })
         fetch(`https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/${data[0].woeid}`, {
           credentials: 'same-origin',
@@ -106,7 +110,8 @@ class App extends Component {
             this.setState({
               search_location: data.title,
               search_country: data.parent.title,
-              consolidated_weather: data.consolidated_weather
+              consolidated_weather: data.consolidated_weather,
+              isSearching: false
             })
           })
       })
@@ -122,23 +127,28 @@ class App extends Component {
     // console.log(this.state.user_location);
     // console.log(this.state.user_current_weather);
 
-    let current_location_weather = <div>Loading...</div>
+    let current_location_weather = <div className="current_weather_container">Loading...</div>
+
 
     if(this.state.current_temp && this.state.current_weather_state_svg) {
       current_location_weather =
       <CurrentWeather
         user_location={this.state.user_location}
+        user_location_state={this.state.user_location_state}
         current_temp={Math.round(this.state.current_temp)}
         current_weather_state={this.state.current_weather_state}
         current_weather_state_svg={this.state.current_weather_state_svg}
       />
     }
 
-    let search_results = this.state.search_location ? <Weather
+     let search_results = this.state.search_location ? <Weather
       consolidated_weather={this.state.consolidated_weather}
       search_location={this.state.search_location}
       search_country={this.state.search_country}
     /> : null
+
+    let search_loader = this.state.isSearching ? <div className="lds-dual-ring"></div> : null
+
 
     return (
       <div className="App">
@@ -153,6 +163,7 @@ class App extends Component {
           />
           <button>GO</button>
         </form>
+        {search_loader}
         {search_results}
       </div>
     );

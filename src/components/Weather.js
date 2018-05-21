@@ -9,6 +9,7 @@ class Weather extends React.Component {
 
   dateConverter(date) {
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    // eslint-disable-next-line
     let [_, month, day] = date.split('-')
     return months[month - 1] + ' ' + day
   }
@@ -33,7 +34,7 @@ class Weather extends React.Component {
 
     return(
       <div>
-        <h3>{search_city}, {search_country}</h3>
+        <h3 className="search_city"><i className="fas fa-thumbtack search_city_icon"></i> {search_city}, {search_country}</h3>
         <div className="weather_container">
           {weather_detail}
         </div>
