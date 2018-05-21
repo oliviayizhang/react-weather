@@ -1,27 +1,98 @@
 body {
   font-family: 'Lato', sans-serif;
+  background-color: rgba(203, 218, 229, .6);
+}
+
+.current_weather_container {
+  border: 1px solid green;
+  width: 10em;
+  position: absolute;
+  right: 1em;
+  top: 3em;
 }
 
 .weather_container {
-  /* border: 1px solid blue; */
+  display: flex;
+  justify-content: center;
+}
+
+.weather_day {
+  position: relative;
+  height: 15em;
+  width: 15em;
+  padding: 0;
+  margin: 5px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 3px 10px 25px 1px rgba(50, 50, 50, 0.1);
 }
 
 .weather_container li {
   list-style-type: none;
+  position: absolute;
+  color: #B8B8B8;
+  left: 0;
+}
+
+li.date {
+  font-size: 1.4em;
+  top: 3%;
+  left: 4%;
+}
+
+li.max_temp {
+  top: 35%;
+  left: 37%;
+  font-size: 3em;
+  font-weight: 300;
+}
+
+li.min_temp {
+  top: 58%;
+  left: 43%;
+  font-size: 1.5em;
+  font-weight: 300;
+}
+
+.weather_state_svg {
+  height: 3em;
+  width: 3em;
+  top: 1%;
+  right: 2%;
+  position: absolute;
+}
+
+li.humidity {
+  top: 85%;
+  left: 27%;
 }
 
 /* geosuggest */
+.search_form {
+  display: flex;
+  justify-content: center;
+  margin: 3em;
+}
+
+button {
+  z-index: 1;
+  color: grey;
+}
+
+.search_icon:hover {
+  cursor: pointer;
+}
+
 .geosuggest {
   font-size: 18px;
   position: relative;
   width: 50%;
-  margin: 1em 0;
   text-align: left;
 }
 .geosuggest__input {
   width: 100%;
   border: 2px solid transparent;
-  box-shadow: 0 0 1px #3d464d;
+  /* box-shadow: 0 0 1px #3d464d; */
   padding: .5em 1em;
   -webkit-transition: border 0.2s, box-shadow 0.2s;
           transition: border 0.2s, box-shadow 0.2s;
@@ -77,4 +148,8 @@ body {
 } */
 /* end of geosuggest */
 
-/* weather_detail */
+@media (max-width: 768px) {
+  .weather_container {
+    flex-direction: column;
+  }
+}
