@@ -137,8 +137,7 @@ class App extends Component {
   }
 
   render() {
-    console.log('looking for celcius? ' + this.state.celsius);
-    let current_location_weather = <div className="current_weather_container">Retrieving your location...</div>
+    let current_location_weather = <div className="current_weather_container retrieving_location">Retrieving your location...</div>
 
     if(this.state.current_temp && this.state.current_weather_state_svg && this.state.locationAllowed) {
       current_location_weather =
@@ -165,7 +164,6 @@ class App extends Component {
 
     return (
       <div className="App">
-        {current_location_weather}
 
         <form onSubmit={this.fetchWeather} className="search_form">
           <Geosuggest
@@ -176,7 +174,8 @@ class App extends Component {
           />
           <button className="search_icon">GO</button>
         </form>
-        <div className="unit_switch"><button onClick={this.switchUnit}>C | F</button></div>
+        {current_location_weather}
+        <div className="unit_switch"><button onClick={this.switchUnit}>{this.state.celsius ? '℉' : '℃'}</button></div>
         {search_loader}
         {search_results}
       </div>
