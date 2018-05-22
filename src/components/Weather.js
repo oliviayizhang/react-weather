@@ -21,9 +21,8 @@ class Weather extends React.Component {
         <ul className="weather_day" key={i-1}>
           <li key={i} className="date">{this.dateConverter(day.applicable_date)}</li>
           <img src={`https://www.metaweather.com/static/img/weather/${day.weather_state_abbr}.svg`} alt="weather condition" className="weather_state_svg"/>
-          {/* <li key={i+1} className="weather_state">{day.weather_state_name}</li> */}
-          <li key={i+2} className="max_temp">{Math.round(day.max_temp)}&#176;</li>
-          <li key={i+3} className="min_temp">{Math.round(day.min_temp)}&#176;</li>
+          <li key={i+2} className="max_temp">{this.props.celsius ? Math.round(day.max_temp) : Math.round(this.props.cToF(day.max_temp))}&#176;</li>
+          <li key={i+3} className="min_temp">{this.props.celsius ? Math.round(day.min_temp) : Math.round(this.props.cToF(day.min_temp))}&#176;</li>
           <li key={i+4} className="humidity">Humidity: {day.humidity}&#37;</li>
         </ul>
       ]

@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
-import Title from './components/Title'
+import React, { Component } from 'react'
 import Weather from './components/Weather'
 import CurrentWeather from './components/CurrentWeather'
 import Geosuggest from 'react-geosuggest'
 
-import './stylesheets/normalize.css';
-import './stylesheets/App.css';
+import './stylesheets/normalize.css'
+import './stylesheets/App.css'
 
 
 class App extends Component {
@@ -24,24 +23,33 @@ class App extends Component {
       user_location_state: null,
       consolidated_weather: [],
       current_temp: null,
-      current_weather_state: null,
       current_weather_state_svg: null,
-      isSearching: false
+      isSearching: false,
+      locationAllowed: true,
+      celsius: true
     }
     this.fetchWeather = this.fetchWeather.bind(this)
     this.onSuggestSelect = this.onSuggestSelect.bind(this)
     this.fetchCurrentWeather = this.fetchCurrentWeather.bind(this)
+    this.cToF = this.cToF.bind(this)
+    this.switchUnit = this.switchUnit.bind(this)
   }
 
   componentDidMount() {
     navigator.geolocation.getCurrentPosition((position) => {
       let user_lat = position.coords.latitude
       let user_lng = position.coords.longitude
-      this.setState({
-        user_lat: user_lat,
-        user_lng: user_lng
-      })
-      this.fetchCurrentWeather()
+      if(user_lat && user_lng) {
+        this.setState({
+          user_lat: user_lat,
+          user_lng: user_lng
+        })
+        this.fetchCurrentWeather()
+      } else {
+        this.setState({
+          locationAllowed: false
+        })
+      }
     })
   }
 
@@ -78,7 +86,6 @@ class App extends Component {
               user_location: data.title,
               user_location_state: data.parent.title,
               current_temp: data.consolidated_weather[0].the_temp,
-              current_weather_state: data.consolidated_weather[0].weather_state_name,
               current_weather_state_svg: data.consolidated_weather[0].weather_state_abbr
             })
           })
@@ -117,27 +124,32 @@ class App extends Component {
       })
   }
 
+  //switch
+  cToF(celcius) {
+    return 1.8 * celcius + 32
+  }
+
+  //Onclick to switch
+  switchUnit() {
+    this.setState({
+      celsius: !this.state.celsius
+    })
+  }
+
   render() {
-    // console.log("woeid:" + this.state.woeid);
-    console.log("city:" + this.state.search_location);
-    // console.log("consolidated weather:" + this.state.consolidated_weather);
-    // console.log(this.state.lat);
-    // console.log(this.state.lng);
-    // console.log(this.state.user_woeid);
-    // console.log(this.state.user_location);
-    // console.log(this.state.user_current_weather);
+    console.log('looking for celcius? ' + this.state.celsius);
+    let current_location_weather = <div className="current_weather_container">Retrieving your location...</div>
 
-    let current_location_weather = <div className="current_weather_container">Loading...</div>
-
-
-    if(this.state.current_temp && this.state.current_weather_state_svg) {
+    if(this.state.current_temp && this.state.current_weather_state_svg && this.state.locationAllowed) {
       current_location_weather =
       <CurrentWeather
         user_location={this.state.user_location}
         user_location_state={this.state.user_location_state}
-        current_temp={Math.round(this.state.current_temp)}
-        current_weather_state={this.state.current_weather_state}
+        current_temp={this.state.current_temp}
         current_weather_state_svg={this.state.current_weather_state_svg}
+        locationAllowed={this.state.locationAllowed}
+        celsius={this.state.celsius}
+        cToF={this.cToF}
       />
     }
 
@@ -145,15 +157,16 @@ class App extends Component {
       consolidated_weather={this.state.consolidated_weather}
       search_location={this.state.search_location}
       search_country={this.state.search_country}
+      celsius={this.state.celsius}
+      cToF={this.cToF}
     /> : null
 
     let search_loader = this.state.isSearching ? <div className="lds-dual-ring"></div> : null
 
-
     return (
       <div className="App">
-        <Title/>
         {current_location_weather}
+
         <form onSubmit={this.fetchWeather} className="search_form">
           <Geosuggest
             ref={el=>this._geoSuggest=el}
@@ -161,8 +174,9 @@ class App extends Component {
             types={['(cities)']}
             onSuggestSelect={this.onSuggestSelect}
           />
-          <button>GO</button>
+          <button className="search_icon">GO</button>
         </form>
+        <div className="unit_switch"><button onClick={this.switchUnit}>C | F</button></div>
         {search_loader}
         {search_results}
       </div>
