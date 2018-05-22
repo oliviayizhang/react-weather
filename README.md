@@ -1,6 +1,11 @@
 # React-Weather
 
-A weather app using React.js
+It detects user's current location and shows weather information.
+It returns a list of city name for suggestion based on user's input.
+It displays 6 days weather forecast with graphic weather information.
+It lets user switch between celsius and fahrenheit.
+It has responsive design.
+
 
 ## Getting Started
 
